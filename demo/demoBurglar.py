@@ -7,7 +7,7 @@
 """
 DEMOBURGLAR DEMO: was it the burglar example?
 """
-print __doc__
+print(__doc__)
 
 import numpy as np
 import sys
@@ -76,31 +76,31 @@ pot[radio].table = table
 
 #va = potvariables(pot)
 jointpot = multpots(pot)
-#print "jointpot.variables:", jointpot.variables
-#print "jointpot.card:", jointpot.card
-#print "jointpot.table:", jointpot.table
+#print("jointpot.variables:", jointpot.variables)
+#print("jointpot.card:", jointpot.card)
+#print("jointpot.table:", jointpot.table)
 
-#print jointpot.variables
+#print(jointpot.variables)
 DAG = dag(pot) # Generate the DAG adjacency matrix
-print "DAG adjacency matrix: \n", DAG
+print("DAG adjacency matrix: \n", DAG)
 
 evidencedpot = setpot(jointpot, alarm, yes)
 #FIXME: arbitrary setting
 #evidencedpot.variables = evidencedpot.variables[1:]
-#print "................................................"
-#print "evidencedpot.variables:", evidencedpot.variables
-#print "evidencedpot.table: \n", evidencedpot.table
+#print("................................................")
+#print("evidencedpot.variables:", evidencedpot.variables)
+#print("evidencedpot.table: \n", evidencedpot.table)
 
-#print "evidencepot.variables:", evidencedpot.table
+#print("evidencepot.variables:", evidencedpot.table)
 conditionedpot = condpot(evidencedpot, burglar)
-print "p(burglar|alarm=yes)"
-print "conditionedpot.variables:", conditionedpot.variables
-print "conditionedpot.table: \n", conditionedpot.table
+print("p(burglar|alarm=yes)")
+print("conditionedpot.variables:", conditionedpot.variables)
+print("conditionedpot.table: \n", conditionedpot.table)
 # jointpot = multpots(pot); % joint distribution
 
 evidencedpot = setpot(jointpot, [alarm, radio], [yes, yes])
 conditionedpot = condpot(evidencedpot, burglar)
-print "p(burglar|alarm=yes, radio=yes):"
-print "conditionedpot.variables:", conditionedpot.variables
-print "conditionedpot.table: \n", conditionedpot.table
-#print "type:", (conditionedpot.table).dtype
+print("p(burglar|alarm=yes, radio=yes):")
+print("conditionedpot.variables:", conditionedpot.variables)
+print("conditionedpot.table: \n", conditionedpot.table)
+#print("type:", (conditionedpot.table).dtype)

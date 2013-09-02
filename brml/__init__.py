@@ -3,16 +3,16 @@
 # http://stackoverflow.com/questions/5134893/importing-python-classes-from-different-files-in-a-subdirectory
 # __all__ = ['MyClass01','MyClass02']
 
-from .potential import potential
-from .variable import variable
-from multpots import multpots
-from dag import dag
-from intersect import intersect
-from setminus import setminus
-from myzeros import myzeros
-from ismember import ismember
-from setstate import setstate
-from setpot import setpot
+from brml.potential import potential
+from brml.variable import variable
+from brml.multpots import multpots
+from brml.dag import dag
+from brml.intersect import intersect
+from brml.setminus import setminus
+from brml.myzeros import myzeros
+from brml.ismember import ismember
+from brml.setstate import setstate
+from brml.setpot import setpot
 
 
 __all__ = ['potential',

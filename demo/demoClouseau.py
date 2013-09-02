@@ -7,7 +7,7 @@
 """
 	DEMOCLOUSEAU inspector clouseau example
 """
-print __doc__
+print(__doc__)
 
 import numpy as np
 import sys
@@ -34,7 +34,7 @@ but are useful for displaying table entries:
 """
 # Create empty list for variable, len(variable) = N
 variable = [ variable(None, None) for i in range(N)] 
-print "variable list created as variable[knife, maid, butler] \n"
+print("variable list created as variable[knife, maid, butler] \n")
 variable[butler].name='butler'; variable[butler].domain = ['murderer','not murderer']
 variable[maid].name='maid'; variable[maid].domain =['murderer','not murderer']
 variable[knife].name='knife'; variable[knife].domain=['used','not used']
@@ -45,7 +45,7 @@ potential numbering is arbitary
 """
 # Create empty list for potential, len(variable) = N
 pot = [potential() for i in range(N)]
-print "pot list created as pot[knife, maid, butler] \n"
+print("pot list created as pot[knife, maid, butler] \n")
 
 pot[butler].variables = np.array([butler])
 pot[butler].card = np.array([2])
@@ -53,7 +53,7 @@ table = np.zeros((2))
 table[murderer] =0.6
 table[notmurderer] =0.4
 pot[butler].table = table
-print "butler created at:", pot[butler]
+print("butler created at:", pot[butler])
 
 pot[maid].variables=np.array([maid])
 pot[maid].card = np.array([2])
@@ -61,7 +61,7 @@ table = np.zeros((2))
 table[murderer] =0.2
 table[notmurderer] =0.8
 pot[maid].table = table
-print "maid created at:", pot[maid]
+print("maid created at:", pot[maid])
 
 pot[knife].variables=np.array([knife,butler,maid])  # define array below using this variable order
 pot[knife].card = np.array([2, 2, 2])
@@ -72,31 +72,31 @@ table[used, murderer,    notmurderer]=0.6
 table[used, murderer,    murderer]   =0.1
 pot[knife].table = table
 pot[knife].table[notused][:][:]=1-pot[knife].table[used][:][:] # due to normalisation
-print "knife created at:", pot[knife]
+print("knife created at:", pot[knife])
 
 jointpot = multpots(pot) # joint distribution
 #FIXME: arbitrary set order and swaped
 #jointpot.variables = [0,1,2]
 #jointpot.table = np.swapaxes(jointpot.table,0,2)
-print "jointpot.variables:", jointpot.variables
-print "joint distribution generated as: jointpot \n", jointpot.table 
+print("jointpot.variables:", jointpot.variables)
+print("joint distribution generated as: jointpot \n", jointpot.table )
 
 sum = jointpot.table.sum()
-print "knife = ", variable[knife].domain[used], "maid = ", variable[maid].domain[murderer], "butler = ", variable[butler].domain[murderer]
+print("knife = ", variable[knife].domain[used], "maid = ", variable[maid].domain[murderer], "butler = ", variable[butler].domain[murderer])
 
 DAG = dag(pot) # Generate the DAG adjacency matrix
-print "DAG adjacency matrix: \n", DAG
+print("DAG adjacency matrix: \n", DAG)
 
 evidencedpot = setpot(jointpot,knife,used)
 #FIXME: arbitrary setting
 #evidencedpot.variables = evidencedpot.variables[1:]
-print "................................................"
-print "evidencedpot.variables:", evidencedpot.variables
-print "evidencedpot.table: \n", evidencedpot.table
+print("................................................")
+print("evidencedpot.variables:", evidencedpot.variables)
+print("evidencedpot.table: \n", evidencedpot.table)
 
 conditionedpot = condpot(evidencedpot,butler)
-print "conditionedpot.variables:", conditionedpot.variables
-print "conditionedpot.table: \n", conditionedpot.table
+print("conditionedpot.variables:", conditionedpot.variables)
+print("conditionedpot.table: \n", conditionedpot.table)
 # jointpot = multpots(pot); % joint distribution
 
 #drawNet(dag(pot),variable);

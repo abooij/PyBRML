@@ -2,9 +2,9 @@
 
 "Basic Class: potential"
 if __name__ == '__main__':
-    print 'PotentialClass is running by itself'
+    print('PotentialClass is running by itself')
 else:
-    print 'PotentialClass is imported as module'
+    print('PotentialClass is imported as module')
 
 import numpy as np
 import copy
@@ -60,9 +60,9 @@ class potential:
         #FIXME: works only 1-D considered, not completed
         newpot = copy.copy(self)
         newpot.variables = intersect(self.variables, other.variables)
-        print "current divided newpot.variables=", newpot.variables
+        print("current divided newpot.variables=", newpot.variables)
         newpot.table = self.table/other.table
-        print "current divided table: \n", newpot.table
+        print("current divided table: \n", newpot.table)
         return newpot
 
     def size(self):
@@ -70,9 +70,9 @@ class potential:
         table = np.array(self.table)
         dim = table.ndim
         if dim == 0:
-            print "ERRRRRRRRRRRRRRRRRR"
+            print("ERRRRRRRRRRRRRRRRRR")
         elif dim > len(var):
             size = np.array(table.shape).size
-            print "adjusted!!!!!!"
+            print("adjusted!!!!!!")
 
         return size  # np.array format
