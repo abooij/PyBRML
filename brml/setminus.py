@@ -10,8 +10,8 @@ diff is the set in A without the elemnts B.
 import numpy as np
 
 def setminus(a,b):
-	a = np.array(a)
-	b = np.array(b)
-	intersect = np.intersect1d(a,b)
-	diff = np.setxor1d(a,intersect)
-	return diff
+    a = np.array(a)
+    b = np.array(b)
+    intersect = np.intersect1d(a,b)
+    diff = np.setxor1d(a,intersect)
+    return diff

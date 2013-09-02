@@ -5,7 +5,7 @@
 # License: GNU license
 # def demoClouseau():
 """
-	DEMOCLOUSEAU inspector clouseau example
+    DEMOCLOUSEAU inspector clouseau example
 """
 print(__doc__)
 

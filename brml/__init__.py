@@ -16,12 +16,12 @@ from brml.setpot import setpot
 
 
 __all__ = ['potential',
-			'variable',
-			'multpots',
-			'dag',
-			'intersect',
-			'setminus',
-			'myzeros',
-			'ismember',
-			'setpot',
-			'setstate']
+            'variable',
+            'multpots',
+            'dag',
+            'intersect',
+            'setminus',
+            'myzeros',
+            'ismember',
+            'setpot',
+            'setstate']

@@ -7,6 +7,6 @@ else:
     print('VariableClass is imported as module')
 
 class Variable:
-	def __init__(self, name = [], domain= []):
-		self.name = name
-		self.domain = domain
+    def __init__(self, name = [], domain= []):
+        self.name = name
+        self.domain = domain
