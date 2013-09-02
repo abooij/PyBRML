@@ -9,7 +9,7 @@ import unittest
 import sys
 sys.path.append("..")
 from brml.potvariables import potvariables
-from brml.potential import potential
+from brml.potential import Potential
 import numpy as np
 
 
@@ -25,21 +25,21 @@ class potvariablesTestCase(unittest.TestCase):
         self.assertRaises(NameError, potvariables, pot)
 
     """def testNoneTable(self):
-        pot = [potential([1], np.zeros(0))]
+        pot = [Potential([1], np.zeros(0))]
         self.assertRaises(ValueError, potvariables, pot)
     """
 
     def testNoneVariables(self):
-        pot = [potential(np.array([]), np.zeros(3))]
+        pot = [Potential(np.array([]), np.zeros(3))]
         self.assertRaises(ValueError, potvariables, pot)
 
     def testDiffVaTa(self):
-        pot = [potential(np.array([1, 2]), np.zeros((3, 2, 2)))]
+        pot = [Potential(np.array([1, 2]), np.zeros((3, 2, 2)))]
         self.assertRaises(ValueError, potvariables, pot)
 
     def testMismatchPot(self):
         """mismatch dimension in pot"""
-        pot = [potential() for i in range(4)]
+        pot = [Potential() for i in range(4)]
         pot[0].variables = np.array([0])
         pot[0].card = np.array([2])
         pot[0].table = np.zeros(2)
@@ -66,7 +66,7 @@ class potvariablesTestCase(unittest.TestCase):
 
     def testMatchPot(self):
         """all variables's dimensions are match in pot"""
-        pot = [potential() for i in range(4)]
+        pot = [Potential() for i in range(4)]
         pot[0].variables = np.array([0])
         pot[0].card = np.array([2])
         pot[0].table = np.zeros(2)

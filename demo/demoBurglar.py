@@ -39,7 +39,7 @@ variable[alarm].domain = ['yes', 'no']
 variable[radio].name = 'radio'
 variable[radio].domain = ['yes', 'no']
 
-pot = [potential() for i in range(4)]
+pot = [Potential() for i in range(4)]
 
 pot[burglar].variables = np.array([burglar])
 pot[burglar].card = np.array([2])

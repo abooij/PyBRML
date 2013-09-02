@@ -7,8 +7,8 @@
 
 import numpy as np
 import copy
-from IndexToAssignment import IndexToAssignment
-from potential import potential
+from .IndexToAssignment import IndexToAssignment
+from .potential import Potential
 
 
 def orderpot(pot, varargin):
@@ -66,7 +66,7 @@ def orderpot(pot, varargin):
         newta[i] = oldta[tuple(oldass)]
 
     newta.resize(newns)
-    newpot = potential(None, None)
+    newpot = Potential(None, None)
     newpot.variables = newvs
     newpot.table = newta
 

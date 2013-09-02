@@ -8,13 +8,13 @@
 import unittest
 import sys
 sys.path.append("..")
-from brml.potential import potential
+from brml.potential import Potential
 import numpy as np
 
 
 class potentialTestCase(unittest.TestCase):
     def setUp(self):
-        self.pot = potential()
+        self.pot = Potential()
         self.pot.variables = np.array([2, 1])
         self.pot.card = np.array([2, 2])
         self.pot.table = np.array([[0.2, 0.6], [0.8, 0.4]])
@@ -28,19 +28,19 @@ class potentialTestCase(unittest.TestCase):
         assert np.allclose(pa.table, pb.table)
 
     def testMultEmpty(self):
-        newpot = self.pot * potential()
+        newpot = self.pot * Potential()
         self.assertTwoPot(newpot, self.pot)
         newpot = None
 
-        newpot = potential() * self.pot
+        newpot = Potential() * self.pot
         self.assertTwoPot(newpot, self.pot)
 
     def testMult(self):
-        otherpot = potential()
+        otherpot = Potential()
         otherpot.variables = np.array([3])
         otherpot.card = np.array([3])
         otherpot.table = np.array([0.1, 0.4, 0.5])
-        answerpot = potential()
+        answerpot = Potential()
         answerpot.variables = np.array([1, 2, 3])
         answerpot.card = np.array([2, 2, 3])
         answerpot.table = np.array([[[0.02, 0.08, 0.1],
@@ -49,11 +49,11 @@ class potentialTestCase(unittest.TestCase):
                                      [0.04, 0.16, 0.2]]])
         self.assertTwoPot(self.pot * otherpot, answerpot)
 
-        otherpot = potential()
+        otherpot = Potential()
         otherpot.variables = np.array([3, 1])
         otherpot.card = np.array([3, 2])
         otherpot.table = np.array([[0.2, 0.3], [0.2, 0.2], [0.6, 0.5]])
-        answerpot = potential()
+        answerpot = Potential()
         answerpot.variables = np.array([1, 2, 3])
         answerpot.card = np.array([2, 2, 3])
         answerpot.table = np.array([[[0.04, 0.04, 0.12],

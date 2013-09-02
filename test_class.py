@@ -2,16 +2,16 @@
 
 # this is a test case for sample codes
 
-from brml.potential import potential
-from brml.variable import variable
+from brml.potential import Potential
+from brml.variable import Variable
 
 
-p = potential(1,1)
+p = Potential(1,1)
 print("var POTENTIAL.p created")
 print("p.variable = ", p.variables)
 print("p.table = ", p.table)
 
-v = variable('butler',['hehe', 'heihei'])
+v = Variable('butler',['hehe', 'heihei'])
 # v = variable('butler',['murderer','not murderer'])
 print("var VARIABLE.v created")
 print("v.name = ", v.name)

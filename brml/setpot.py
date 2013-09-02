@@ -9,7 +9,7 @@
 """
 import numpy as np
 import copy as copy
-from brml.potential import potential
+from brml.potential import Potential
 from brml.ismember import ismember
 from brml.setstate import setstate
 from brml.intersect import intersect
@@ -48,7 +48,7 @@ def setpot(pot, evvariables, evidstates):
         newvar = setminus(vars, intersection)
         dummy, idx = ismember(newvar, vars)
         newns = nstates[idx]
-        newpot = potential()
+        newpot = Potential()
         newpot.variables = newvar
         newpot.card = newns
         newpot.table = np.zeros(newns)

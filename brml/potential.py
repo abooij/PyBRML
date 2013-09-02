@@ -13,7 +13,7 @@ from brml.ismember import ismember
 from brml.IndexToAssignment import IndexToAssignment
 
 
-class potential:
+class Potential:
     def __init__(self, variables=np.array([]), card=np.array([]),
                  table=np.array([])):
         self.variables = variables
@@ -33,7 +33,7 @@ class potential:
         if commonitem.size > 0:
             assert np.allclose(self.card[idx1], other.card[idx2])
 
-        newpot = potential()
+        newpot = Potential()
         #FIX ME: dimension consistency not checked
         #FIX ME: only 1-D multiply considered
 

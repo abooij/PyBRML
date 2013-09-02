@@ -44,7 +44,7 @@ Three potential since p(butler,maid,knife)=p(knife|butler,maid)p(butler)p(maid).
 potential numbering is arbitary
 """
 # Create empty list for potential, len(variable) = N
-pot = [potential() for i in range(N)]
+pot = [Potential() for i in range(N)]
 print("pot list created as pot[knife, maid, butler] \n")
 
 pot[butler].variables = np.array([butler])

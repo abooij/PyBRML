@@ -14,7 +14,7 @@ from setminus import setminus
 
 def condpot(pot,varargin):
 #FIXME: only 1 varargin supported , use *arg in further development
-	newpot = potential()
+	newpot = Potential()
 	y = []
 	x = varargin
 	#print("pot.variables:", pot.variables)
@@ -40,7 +40,7 @@ def condpot(pot,varargin):
 	#print("newpot.variables:", newpot.variables)
 	#print("newpot.table: \n", newpot.table)
 	
-	SUM = potential()
+	SUM = Potential()
 	SUM.variables = np.array([])
 	SUM.table = np.sum(newpot.table)
         #print("newpot.table:", newpot.table)

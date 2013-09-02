@@ -9,13 +9,13 @@ import unittest
 import sys
 sys.path.append("..")
 from brml.orderpot import orderpot
-from brml.potential import potential
+from brml.potential import Potential
 import numpy as np
 
 
 class orderpotTestCase(unittest.TestCase):
     def setUp(self):
-        self.pot = potential()
+        self.pot = Potential()
         self.pot.variables = np.array([3, 2, 1])
         self.card = np.array([2, 3, 4])
         self.pot.table = np.arange(0, 24).reshape(2, 3, 4)
@@ -27,7 +27,7 @@ class orderpotTestCase(unittest.TestCase):
         assert np.allclose(pa.variables, pb.variables)
         assert np.allclose(pa.card, pb.card)
         assert np.allclose(pa.table, pb.table)
-    
+
     def testNewOrder(self):
         neworder = [2, 1, 3]
         newpot = orderpot(self.pot, neworder)
