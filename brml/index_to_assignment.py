@@ -8,7 +8,7 @@
 import numpy as np
 
 
-def IndexToAssignment(index, dim):
+def index_to_assignment(index, dim):
     A = []
     for i, d in enumerate(dim):
         A.append(index / int(np.prod(dim[i+1:])))

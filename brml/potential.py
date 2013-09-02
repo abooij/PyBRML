@@ -10,7 +10,7 @@ import numpy as np
 import copy
 from brml.intersect import intersect
 from brml.ismember import ismember
-from brml.IndexToAssignment import IndexToAssignment
+from brml.index_to_assignment import index_to_assignment
 
 
 class Potential:
@@ -48,7 +48,7 @@ class Potential:
 
         newpot.table = np.zeros(tuple(newpot.card))
         for i in range(np.prod(newpot.card)):
-            assignment = IndexToAssignment(i, newpot.card)
+            assignment = index_to_assignment(i, newpot.card)
             assign1 = np.array(assignment)[mapA]
             assign2 = np.array(assignment)[mapB]
             newpot.table[tuple(assignment)] = self.table[tuple(assign1)] *\

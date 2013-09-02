@@ -17,8 +17,8 @@ from brml.setstate import setstate
 from brml.setminus import setminus
 from brml.myzeros import myzeros
 from brml.multpots import multpots
-from brml.IndexToAssignment import IndexToAssignment
-from brml.AssignmentToIndex import AssignmentToIndex
+from brml.index_to_assignment import index_to_assignment
+from brml.assignment_to_index import assignment_to_index
 
 
 def setpot(pot, evvariables, evidstates):
@@ -55,7 +55,7 @@ def setpot(pot, evvariables, evidstates):
         #print("idx:", idx)
         #print("iv:", iv)
         for i in range(np.prod(newns)):
-            newassign = IndexToAssignment(i, newns)
+            newassign = index_to_assignment(i, newns)
             oldassign = np.zeros(nstates.size, 'int8')
             oldassign[idx] = newassign
             oldassign[iv] = evidstates

@@ -7,7 +7,7 @@
 
 import numpy as np
 import copy
-from .IndexToAssignment import IndexToAssignment
+from .index_to_assignment import index_to_assignment
 from .potential import Potential
 
 
@@ -60,7 +60,7 @@ def orderpot(pot, varargin):
         newns[i] = oldns[idx]
 
     for i in range(np.prod(oldns)):
-        newass = IndexToAssignment(i, newns)
+        newass = index_to_assignment(i, newns)
 
         oldass = [newass[j] for j in oldInnew_idx]
         newta[i] = oldta[tuple(oldass)]
