@@ -8,9 +8,9 @@
 % If both x and y are missing, just return the normalised table
 """
 import numpy as np
-from .potential import potential
-from intersect import intersect
-from setminus import setminus
+from .potential import Potential
+from .intersect import intersect
+from .setminus import setminus
 
 def condpot(pot,varargin):
     #FIXME: only 1 varargin supported , use *arg in further development

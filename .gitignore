@@ -5,3 +5,4 @@ python/
 build/
 brml.*/
 setup.cfg
+docs/_build/
