@@ -56,7 +56,7 @@ class Potential:
 
         return newpot
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         #FIXME: works only 1-D considered, not completed
         newpot = copy.copy(self)
         newpot.variables = intersect(self.variables, other.variables)

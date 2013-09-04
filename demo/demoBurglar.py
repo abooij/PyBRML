@@ -12,8 +12,8 @@ print(__doc__)
 import numpy as np
 import sys
 sys.path.append("..")
-from brml.variable import variable
-from brml.potential import potential
+from brml.variable import Variable
+from brml.potential import Potential
 from brml.multpots import multpots
 from brml.potvariables import potvariables
 from brml.setpot import setpot
@@ -25,7 +25,7 @@ burglar, earthquake, alarm, radio = range(4)  # Variable order is arbitary
 yes = 0
 no = 1
 
-variable = [variable(None, None) for i in range(4)]
+variable = [Variable(None, None) for i in range(4)]
 
 variable[burglar].name = 'burglar'
 variable[burglar].domain = ['yes', 'no']

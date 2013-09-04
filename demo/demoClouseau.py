@@ -12,8 +12,8 @@ print(__doc__)
 import numpy as np
 import sys
 sys.path.append("..")
-from brml.potential import potential
-from brml.variable import variable
+from brml.potential import Potential
+from brml.variable import Variable
 # from brml import *
 from brml.multpots import multpots
 from brml.dag import dag
@@ -22,18 +22,18 @@ from brml.condpot import condpot
 
 
 # Define number of variables(nodes)
-N = 3   
-butler=2; maid=1; knife=0 # Variable order is arbitary (3,2,1 for MATLAB)	
+N = 3
+butler=2; maid=1; knife=0 # Variable order is arbitary (3,2,1 for MATLAB)
 # Define states, starting from 0. (from 1 for MATLAB)
 murderer=0; notmurderer=1
 used=0; notused=1
 
-""" 
+"""
 The following definitions of variable are not necessary for computation,
 but are useful for displaying table entries:
 """
 # Create empty list for variable, len(variable) = N
-variable = [ variable(None, None) for i in range(N)] 
+variable = [ Variable(None, None) for i in range(N)]
 print("variable list created as variable[knife, maid, butler] \n")
 variable[butler].name='butler'; variable[butler].domain = ['murderer','not murderer']
 variable[maid].name='maid'; variable[maid].domain =['murderer','not murderer']
