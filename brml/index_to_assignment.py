@@ -11,6 +11,6 @@ import numpy as np
 def index_to_assignment(index, dim):
     A = []
     for i, d in enumerate(dim):
-        A.append(index / int(np.prod(dim[i+1:])))
+        A.append(int(index / int(np.prod(dim[i+1:]))))
         index = index % int(np.prod(dim[i+1:]))
     return A
