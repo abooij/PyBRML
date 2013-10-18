@@ -2,7 +2,9 @@
 
 # http://stackoverflow.com/questions/5134893/importing-python-classes-from-different-files-in-a-subdirectory
 # __all__ = ['MyClass01','MyClass02']
-
+from .potential import Potential, TablePotential
+from .dag import dag
+"""
 from brml.potential import Potential
 from brml.variable import Variable
 from brml.multpots import multpots
@@ -25,3 +27,4 @@ __all__ = ['potential',
             'ismember',
             'setpot',
             'setstate']
+"""
