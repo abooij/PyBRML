@@ -7,7 +7,7 @@ class Potential(metaclass=ABCMeta):
     Should we have some smart way to handle __truediv__?
     """
 
-    variables=[] # variables over which the probability function varies
+    variables=[] # variables over which the probability function varies. should be hashable.
     priori_variables=[] # variables over which this potential is prior
 
     @abstractmethod
@@ -36,15 +36,40 @@ class Potential(metaclass=ABCMeta):
 
     def __mul__(self, other): return self.multiply(other)
 
+    @abstractmethod
+    def __hash__(self):
+        pass
+    @abstractmethod
+    def __eq__(self, other):
+        pass
+    #def __ne__(self, other):
+    #    if type(self)!=type(other): return False
+    #    return not(self==other)
+    __ne__ = lambda x,y: not(x==y)
+
+    @abstractmethod
+    def unity(self): # generate a unity potential
+        pass
+
 
 import numpy
 class TablePotential(Potential):
     def __init__(self, variables, table):
         self.table=table
-        self.variables=variables
+        self.variables=tuple(variables)
 
     def __str__(self):
         return "Variables: "+str(self.variables)+"\nTable:\n"+str(self.table)
+
+    def __hash__(self):
+        return hash(self.variables) ^ hash(str(self.table))
+
+    def __eq__(self, other):
+        if type(self) != type(other): return False
+        return numpy.all(self.table==other.table) and self.variables==other.variables
+
+    def unity(self):
+        return TablePotential([], numpy.array(1))
 
     def _expand_table(self, new_variables): # adds axes to numpy arrays for purposes of additional variables and brings them in the right order
         old_variables=list(self.variables)
@@ -98,6 +123,7 @@ class TablePotential(Potential):
         return self.divide(self.marginalize(forget_vars))
 
     def marginalize(self, variables):
+        #print("marg ",variables, self.variables)
         indices=[self.variables.index(x) for x in variables]
         indices.sort()
         indices.reverse()
@@ -112,7 +138,8 @@ class TablePotential(Potential):
         return new_potential
 
     def evaluate(self, values):
-        eval_pot = self #evaluated potential
+        import copy
+        eval_pot = copy.copy(self) #evaluated potential
         for variable, value in values:
             #print("Evaluating",variable,value)
             if variable not in self.priori_variables:
@@ -123,5 +150,11 @@ class TablePotential(Potential):
             new_shape.pop(var_axis)
             eval_pot.table = numpy.take(eval_pot.table, [value], axis=var_axis)
             eval_pot.table=numpy.reshape(eval_pot.table, new_shape)
-            eval_pot.variables.pop(var_axis)
+            variables_list=list(eval_pot.variables)
+            variables_list.pop(var_axis)
+            eval_pot.variables=tuple(variables_list)
+
         return eval_pot
+
+    def normalize(self):
+        return self/self.marginalize(self.variables)

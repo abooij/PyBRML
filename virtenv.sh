@@ -1,3 +1,3 @@
 #!/bin/bash
-virtualenv python
+virtualenv --system-site-packages python
 source python/bin/activate

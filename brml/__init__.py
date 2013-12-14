@@ -4,6 +4,7 @@
 # __all__ = ['MyClass01','MyClass02']
 from .potential import Potential, TablePotential
 from .dag import dag
+from .fg import FactorGraph
 """
 from brml.potential import Potential
 from brml.variable import Variable

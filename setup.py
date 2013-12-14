@@ -6,5 +6,5 @@ setup(name='brml',
       version='0',
       description='Python version of Bayesian Reasoning and Machine Learning library',
       packages=['brml'],
-      install_requires=['numpy']
+      install_requires=['numpy', 'networkx']
 )
