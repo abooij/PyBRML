@@ -2,9 +2,10 @@ from abc import ABCMeta, abstractmethod
 
 class Potential(metaclass=ABCMeta):
     """
-    Potential represents a probability function. Should be normalized (ie. sum to 1), but this is not enforced at __init__ time.
+    Potential represents a (factor of a) probability function. This is an abstract base class instantiated by e.g. :py:class:`TablePotential`
 
-    Should we have some smart way to handle __truediv__?
+    .. note::
+        Should we have some smart way to handle __truediv__?
     """
 
     variables=[] # variables over which the probability function varies. should be hashable.
@@ -12,29 +13,48 @@ class Potential(metaclass=ABCMeta):
 
     @abstractmethod
     def multiply(self, other):
-        """ Multiply a Potential pointwise (over its variables' values) with another. Returns the new potential. """
+        """
+        Multiply a Potential pointwise (over its variables' values) with another. Returns the new potential.
+
+        .. math:: f_1\\cdot f_2
+        """
         pass
 
     @abstractmethod
     def make_priori(self, variables=[]):
-        """ Make certain variables priori variables, ie. compute p(x|y,variables):=p(x,variables|y)/p(variables|y), where y are the variables over which self is already prior. """
+        """ Make certain variables priori variables, ie. compute
+
+        .. math::
+            f(x,variables):=f(x,variables)/f(variables)
+
+        where self is :math:`f(x,variables)`, and :math:`f(variables)` is computed using :py:func:`marginalize`. """
         pass
 
     @abstractmethod
     def evaluate(self, values):
-        """ Compute the probability function when a certain variable's value is given. Argument is zipped list of variable values. Maybe return numerical value sometimes? """
+        """ Compute the probability function when a certain variable's value is given. Argument is zipped list of variable values.
+
+        .. note::
+            Maybe return numerical value sometimes? """
         pass
 
     @abstractmethod
     def marginalize(self, variables):
-        """ Marginalize the distribution. Argument is list of variables to *forget*. """
+        """ Marginalize the distribution, ie. compute
+
+        .. math::
+            f(x) = \sum_y f(x,y)
+
+        Argument is list of variables to *forget* (corresponding to :math:`y`). """
         pass
 
     @abstractmethod
     def __str__(self):
         pass
 
-    def __mul__(self, other): return self.multiply(other)
+    def __mul__(self, other):
+        """alias of :py:func:`multiply`"""
+        return self.multiply(other)
 
     @abstractmethod
     def __hash__(self):
@@ -48,13 +68,22 @@ class Potential(metaclass=ABCMeta):
     __ne__ = lambda x,y: not(x==y)
 
     @abstractmethod
-    def unity(self): # generate a unity potential
+    def unity(self):
+        """Generate a unity potential which must have the property that
+
+        >>> pot.unity() * pot == pot
+        True
+        """
         pass
 
 
 import numpy
 class TablePotential(Potential):
+    """
+    TablePotential represents a discrete distribution.
+    """
     def __init__(self, variables, table):
+        """Create a table potential. :ref:`table` should be a numpy table whose nth dimension represents the nth variable in the list variables."""
         self.table=table
         self.variables=tuple(variables)
 
@@ -106,6 +135,13 @@ class TablePotential(Potential):
         # FIXME compute new list of priori variables!
 
     def divide(self, other):
+        """Computes
+
+        .. math::
+            f(x)/g(y)
+
+        where :math:`f` and :math:`g` are potentials which may or may not depend on the same variables.
+        """
         self_variables=list(self.variables)
         other_variables=list(other.variables)
         new_variables=list(set(self_variables+other_variables)) # combine variable lists
@@ -116,7 +152,9 @@ class TablePotential(Potential):
         new_potential=TablePotential(new_variables, new_table)
         return new_potential
 
-    __truediv__=divide
+    def __truediv__(self, other):
+        """alias of :py:func:`divide`"""
+        return self.divide(other)
 
     def make_priori(self, variables):
         forget_vars=set(self.variables) - set(variables)
@@ -157,4 +195,9 @@ class TablePotential(Potential):
         return eval_pot
 
     def normalize(self):
+        """Normalize a potential such that
+
+        .. math::
+            \sum_{x} f(x)=1
+        """
         return self/self.marginalize(self.variables)

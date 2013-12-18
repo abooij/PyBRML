@@ -1,31 +1,11 @@
-#!/usr/bin/env python
+"""
+PyBRML is a Python version of BRML toolbox for Bayesian Reasoning and Machine Learning
 
-# http://stackoverflow.com/questions/5134893/importing-python-classes-from-different-files-in-a-subdirectory
-# __all__ = ['MyClass01','MyClass02']
+Thanks to Dr. David Barber's book Bayesian Reasoning and Machine Learning and his original design of the toolbox as an accompanying code for the book.
+
+The BRMLtoolbox is provided to help readers see how mathematical models translate into actual MAT- LAB code. There are a large number of demos that a lecturer may wish to use or adapt to help illustrate the material. In addition many of the exercises make use of the code, helping the reader gain confidence in the concepts and their application. Along with complete routines for many Machine Learning methods, the philosophy is to provide low level routines whose composition intuitively follows the mathematical description of the algorithm. In this way students may easily match the mathematics with the corresponding algorithmic implementation.
+"""
+
 from .potential import Potential, TablePotential
 from .dag import dag
 from .fg import FactorGraph
-"""
-from brml.potential import Potential
-from brml.variable import Variable
-from brml.multpots import multpots
-from brml.dag import dag
-from brml.intersect import intersect
-from brml.setminus import setminus
-from brml.myzeros import myzeros
-from brml.ismember import ismember
-from brml.setstate import setstate
-from brml.setpot import setpot
-
-
-__all__ = ['potential',
-            'variable',
-            'multpots',
-            'dag',
-            'intersect',
-            'setminus',
-            'myzeros',
-            'ismember',
-            'setpot',
-            'setstate']
-"""
