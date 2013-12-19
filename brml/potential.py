@@ -4,12 +4,14 @@ class Potential(metaclass=ABCMeta):
     """
     Potential represents a (factor of a) probability function. This is an abstract base class instantiated by e.g. :py:class:`TablePotential`
 
+    A potential is in essence any function on a number of variables.
+    These variables are represented by Python objects, which must be hashable.
+
     .. note::
         Should we have some smart way to handle __truediv__?
     """
 
     variables=[] # variables over which the probability function varies. should be hashable.
-    priori_variables=[] # variables over which this potential is prior
 
     @abstractmethod
     def multiply(self, other):
@@ -21,31 +23,27 @@ class Potential(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def make_priori(self, variables=[]):
-        """ Make certain variables priori variables, ie. compute
-
-        .. math::
-            f(x,variables):=f(x,variables)/f(variables)
-
-        where self is :math:`f(x,variables)`, and :math:`f(variables)` is computed using :py:func:`marginalize`. """
-        pass
-
-    @abstractmethod
     def evaluate(self, values):
-        """ Compute the probability function when a certain variable's value is given. Argument is zipped list of variable values.
+        """
+        Compute the probability function when a certain variable's value is given.
+
+        :param values: zipped list of variable values, e.g. :samp:`[(x, 5), (y, 8.2)]`.
 
         .. note::
-            Maybe return numerical value sometimes? """
+            Maybe return numerical value sometimes?
+        """
         pass
 
     @abstractmethod
     def marginalize(self, variables):
-        """ Marginalize the distribution, ie. compute
+        """
+        Marginalize the distribution, ie. compute
 
         .. math::
             f(x) = \sum_y f(x,y)
 
-        Argument is list of variables to *forget* (corresponding to :math:`y`). """
+        :param variables: Argument is list of variables to *forget* (corresponding to :math:`y`).
+        """
         pass
 
     @abstractmethod
@@ -69,7 +67,8 @@ class Potential(metaclass=ABCMeta):
 
     @abstractmethod
     def unity(self):
-        """Generate a unity potential which must have the property that
+        """
+        Returns a unity potential which must have the property that
 
         >>> pot.unity() * pot == pot
         True
@@ -83,7 +82,10 @@ class TablePotential(Potential):
     TablePotential represents a discrete distribution.
     """
     def __init__(self, variables, table):
-        """Create a table potential. :ref:`table` should be a numpy table whose nth dimension represents the nth variable in the list variables."""
+        """Create a table potential.
+
+        :param variables: list of variables. For :math:`f(x,y)` this would be :samp:`[x, y]`
+        :param table: a numpy table whose nth dimension represents the nth variable in the list variables."""
         self.table=table
         self.variables=tuple(variables)
 
@@ -132,7 +134,6 @@ class TablePotential(Potential):
 
         new_potential=TablePotential(new_variables, new_table)
         return new_potential
-        # FIXME compute new list of priori variables!
 
     def divide(self, other):
         """Computes
@@ -156,10 +157,6 @@ class TablePotential(Potential):
         """alias of :py:func:`divide`"""
         return self.divide(other)
 
-    def make_priori(self, variables):
-        forget_vars=set(self.variables) - set(variables)
-        return self.divide(self.marginalize(forget_vars))
-
     def marginalize(self, variables):
         #print("marg ",variables, self.variables)
         indices=[self.variables.index(x) for x in variables]
@@ -179,10 +176,6 @@ class TablePotential(Potential):
         import copy
         eval_pot = copy.copy(self) #evaluated potential
         for variable, value in values:
-            #print("Evaluating",variable,value)
-            if variable not in self.priori_variables:
-                eval_pot = eval_pot.make_priori([variable])
-            #print(eval_pot.table, value, eval_pot.variables.index(variable))
             var_axis=eval_pot.variables.index(variable)
             new_shape=list(eval_pot.table.shape)
             new_shape.pop(var_axis)
@@ -199,5 +192,7 @@ class TablePotential(Potential):
 
         .. math::
             \sum_{x} f(x)=1
+
+        :returns: Normalized potential.
         """
         return self/self.marginalize(self.variables)

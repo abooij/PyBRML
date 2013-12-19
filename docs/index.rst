@@ -6,8 +6,6 @@
 Welcome to PyBRML's documentation!
 ==================================
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
 
