@@ -28,27 +28,28 @@ pots = [ #define some potentials
 for p in pots: print(p)
 
 graph=FactorGraph(pots)
-graph.pretty_draw()
-plt.show()
 
-sumprod=[None]*5
-for i in range(5):
-    sumprod[i]=graph.sumprod(vars[i])
+sumprod=graph.marginals()
+messages=graph.sumprod()
+print(sumprod)
 
 import operator, functools
 jointpot=functools.reduce(operator.mul, pots)
 
-margpot=[None]*5
-for i in range(5):
+margpot={}
+for var in vars:
     # compute p(vars[i]), ie marginalize away all other variables
     newvars=list(vars)
-    newvars.pop(i)
-    margpot[i]=jointpot.marginalize(newvars)
-    print("Marginal of variable ",vars[i],":")
-    print(margpot[i].normalize())
+    newvars.remove(var)
+    margpot[var]=jointpot.marginalize(newvars)
+    print("Marginal of variable ",var,":")
+    print(margpot[var].normalize().table)
     # sumprod[i] is p(vars[i]) as computed by the sum-product alg.
     print("According to sum-prod alg:")
-    print(sumprod[i].normalize())
+    print(sumprod[var].normalize().table)
+
+graph.pretty_draw()
+#plt.show(block=False)
 
 # FG on reduced variables
 # TODO

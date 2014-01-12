@@ -2,6 +2,7 @@
 
 #from abc import ABCMeta, abstractmethod
 import networkx as nx
+from networkx.algorithms import bipartite
 
 from .potential import Potential
 
@@ -27,22 +28,32 @@ class FactorGraph(nx.Graph):
         :param potentials: factors of the distribution
         :type potentials: list of :py:class:`Potential`\ s
         """
+
+        #cannot really do anything if no potentials are given
+        assert(len(potentials)>0)
+
         super(FactorGraph, self).__init__()
+
+        # save list of potentials and variables for later reference
+        self.potentials=potentials
+        self.variables=[]
         for pot in potentials:
             self.add_node(pot, bipartite=0)
             self.add_nodes_from(pot.variables, bipartite=1)
             self.add_star([pot,]+list(pot.variables))
+            for variable in pot.variables:
+                if variable not in self.variables:
+                    self.variables.append(variable)
         # for each potential, create node and connect edges to all variables
-        # done
+
 
 
     def is_fg(self):
         """Verify that this graph's types actually represent a factor graph.
 
         :returns: True if it is, False if not."""
-        from networkx.algorithms import bipartite
         if not bipartite.is_bipartite(self): return False
-        for node in nx.nodes_iter(self):
+        for node in self.nodes_iter():
             ispot=isinstance(node, Potential)
             for neighb in nx.all_neighbors(self, node):
                 if ispot==isinstance(neighb, Potential):
@@ -56,54 +67,80 @@ class FactorGraph(nx.Graph):
         :returns: True if it doesn't have cycles (ie. it is a tree)."""
         return len(nx.cycle_basis(self))==0
 
-    # Request a message from node to be sent back to parent (ie. exclude parent from neighbourhood).
-    def _sumprod_step(self, node, parent):
-        children = list(nx.all_neighbors(self, node))
-        children.remove(parent)
-        is_pot=isinstance(node, Potential)
+    def sumprod(self):
+        messages={} # dict: key is target, value is dict: key is source, value is message from source to target
 
-        if is_pot:
-            msg=node
-            for child in children:
-                msg=msg*self._sumprod_step(child, node)
-            msg=msg.marginalize(children)
-        else: #variable
-            msg=parent.unity()
-            for child in children:
-                msg=msg*self._sumprod_step(child, node)
-        return msg
+        unity=None #unity potential (to be found below)
 
-    # compute marginal potential using the sum-product algorithm
-    def sumprod(self, variable):
-        """
-        Execute the sum-product algorithm using belief propagation
-        on this factor graph to compute the marginal in one variable.
-        Efficiently computes
+        schedule={}
+        for node in self:
+            messages[node]={} # again, this is a 2-d dict. first key is target, second key is source, value is message.
 
-        .. math::
-            p(x) = \sum_y p(x,y)
+            if unity==None and isinstance(node, Potential):
+                unity=node.unity() #save unity
 
-        where :math:`x` is one variable over which :math:`p` is a distribution
-        defined by the potential factors,
-        and :math:`y` are the remaining variables.
+            nbhd=self.neighbors(node)
+            schedule[node]=([], nbhd, nbhd[:]) #first is neighbors we have the message from, second is the neighbors we have to send it to, third is complete neighborhood
 
-        .. note:: Only implemented for tree-type factor graphs.
+        #nodes that are ready to send messages... initially just add the leaf nodes
+        ready_nodes=[node for (node, (_, nbhd, _)) in schedule.items() if len(nbhd) == 1]
 
-        :param variable: variable over which to compute the marginal (ie. corresponding to :math:`x` above).
-        """
-        if not self.is_fg(): raise "Invalid factor graph!"
-        if not self.is_tree(): raise "Non-tree factor graph belief propagation not implemented!"
-        if variable not in self: raise "Supplied variable not in factor graph!"
+        #as long as we can process nodes
+        while len(ready_nodes):
+            #pop a node from the stack (DFS) and send its messages
+            msg_source = ready_nodes.pop()
+            children = schedule[msg_source][0] #nodes we got a message from. should be equal to messages[msg_source].keys()
+            if len(schedule[msg_source][2])-len(schedule[msg_source][0]) == 1:
+                msg_target = list(set(schedule[msg_source][1]) - set(schedule[msg_source][0]))[0]
+            else: #received all messages, send to whoever we haven't sent to
+                if len(schedule[msg_source][1]) == 0:
+                    continue
+                msg_target = schedule[msg_source][1][0]
 
-        # broadcast outward
-        children = list(nx.all_neighbors(self, variable))
-        if len(children)==0: raise "Isolated variable, cannot compute marginal!"
+            #print("Sending from [ "+str(msg_source)+" ] to [ "+str(msg_target)+" ]")
 
-        marg = self._sumprod_step(children[0], variable)
+            is_pot=isinstance(msg_source, Potential)
 
-        for child in children[1:]:
-            marg=marg*self._sumprod_step(child, variable)
-        return marg
+            #incoming messages that do NOT originate from the target node
+            incoming=messages[msg_source].copy()
+            incoming.pop(msg_target, None)
+            if is_pot:
+                msg=msg_source
+                # multiply this potentials by all incoming messages
+                for msg_from in incoming.values():
+                    msg=msg*msg_from
+                msg=msg.marginalize(list(incoming.keys()))
+            else: #variable
+                msg=unity
+                for msg_from in incoming.values():
+                    msg=msg*msg_from
+            messages[msg_target][msg_source]=msg
+
+            schedule[msg_target][0].append(msg_source)
+            schedule[msg_source][1].remove(msg_target)
+            target_nbhd_size = len(schedule[msg_target][2])
+            if target_nbhd_size-1 <= len(schedule[msg_target][0]):
+                for next_target in schedule[msg_target][1]:
+                    if len(set(schedule[msg_target][0]) | set([next_target])) == target_nbhd_size:
+                        ready_nodes.append(msg_target)
+        #print(schedule)
+
+        #now check that all messages have been sent
+        for node, (_, sent, _) in schedule.items():
+            if len(sent):
+                print("Did not send ",sent," for node ",node)
+        return messages
+
+    #calculate all single-variable marginals using the sum-product algorithm
+    def marginals(self):
+        msgs=self.sumprod()
+        marginals = {}
+        unity=self.potentials[0].unity()
+        for var in self.variables:
+            marginals[var]=unity
+            for msg in msgs[var].values():
+                marginals[var]=marginals[var]*msg
+        return marginals
 
     def pretty_draw(self, *args, **kwargs):
         """

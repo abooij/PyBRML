@@ -75,6 +75,8 @@ class Potential(metaclass=ABCMeta):
         """
         pass
 
+    def __repr__(self): return str(self)
+
 
 import numpy
 class TablePotential(Potential):
@@ -90,10 +92,10 @@ class TablePotential(Potential):
         self.variables=tuple(variables)
 
     def __str__(self):
-        return "Variables: "+str(self.variables)+"\nTable:\n"+str(self.table)
+        return "Potential on "+str(self.variables)
 
     def __hash__(self):
-        return hash(self.variables) ^ hash(str(self.table))
+        return hash(self.variables) ^ hash(tuple(self.table.flat))
 
     def __eq__(self, other):
         if type(self) != type(other): return False
@@ -159,7 +161,7 @@ class TablePotential(Potential):
 
     def marginalize(self, variables):
         #print("marg ",variables, self.variables)
-        indices=[self.variables.index(x) for x in variables]
+        indices=[self.variables.index(x) for x in variables if x in self.variables]
         indices.sort()
         indices.reverse()
 
