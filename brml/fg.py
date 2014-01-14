@@ -86,7 +86,7 @@ class FactorGraph(nx.Graph):
         ready_nodes=[node for (node, (_, nbhd, _)) in schedule.items() if len(nbhd) == 1]
 
         #as long as we can process nodes
-        while len(ready_nodes):
+        while ready_nodes:
             #pop a node from the stack (DFS) and send its messages
             msg_source = ready_nodes.pop()
             children = schedule[msg_source][0] #nodes we got a message from. should be equal to messages[msg_source].keys()

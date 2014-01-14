@@ -86,12 +86,13 @@ class TablePotential(Potential):
         :param table: a numpy table whose nth dimension represents the nth variable in the list variables."""
         self.table=table
         self.variables=tuple(variables)
+        self._hash=hash(self.variables) ^ hash(tuple(self.table.flat)) #cache the hash because it's used quite often
 
     def __str__(self):
         return "Potential on "+str(self.variables)
 
     def __hash__(self):
-        return hash(self.variables) ^ hash(tuple(self.table.flat))
+        return self._hash
 
     def __eq__(self, other):
         if type(self) != type(other): return False
