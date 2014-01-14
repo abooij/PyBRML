@@ -8,7 +8,6 @@ import numpy
 import networkx as nx
 import matplotlib.pyplot as plt
 from brml import TablePotential
-from brml import dag
 from brml import FactorGraph
 
 butler=(2,2); maid=(1,2); knife=(0,2) # Variable order is arbitary (3,2,1 for MATLAB)
@@ -27,16 +26,13 @@ pot[knife[0]] = TablePotential([knife, butler, maid], \
                   [0.2, 0.3]],
                  [[0.9, 0.4],
                   [0.8, 0.7]]]))
-pot[knife[0]].priori_variables = [butler, maid]
 
 
 posterior_pot = pot[knife[0]] * pot[butler[0]] * pot[maid[0]]
 
 print("Joint distribution:")
 print(posterior_pot) #joint distribution
-DAG = dag(pot)
-print("DAG matrix:")
-print(DAG)
+print(posterior_pot.table)
 
 graph2=FactorGraph(pot)
 graph2.pretty_draw()
@@ -45,10 +41,11 @@ plt.show()
 
 evidencedpot=posterior_pot.evaluate([(knife, used)])
 print("Using evidence that the knife was used (ie. p(butler, maid|knife=used):")
-print(evidencedpot)
+print(evidencedpot.table)
 
 print("Pot for butler after evidence (ie. p(butler|knife=used)):")
 print(evidencedpot.marginalize([maid]))
+print(evidencedpot.marginalize([maid]).table)
 
 
 graph=FactorGraph([posterior_pot])
