@@ -11,7 +11,6 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 from brml import TablePotential
-from brml import dag
 from brml import FactorGraph
 
 # variables

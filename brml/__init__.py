@@ -9,5 +9,4 @@ The BRMLtoolbox is provided to help readers see how mathematical models translat
 """
 
 from .potential import Potential, TablePotential
-from .dag import dag
 from .fg import FactorGraph

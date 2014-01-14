@@ -11,7 +11,6 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 from brml import TablePotential
-from brml import dag
 from brml import FactorGraph
 import profile
 
@@ -32,4 +31,4 @@ sumprod=graph.marginals()
 print(sumprod)
 
 #to profile:
-profile.run("graph.marginals()")
+#profile.run("graph.marginals()")
