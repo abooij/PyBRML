@@ -14,7 +14,7 @@ class Potential(metaclass=ABCMeta):
     variables=[] # variables over which the probability function varies. should be hashable.
 
     @abstractmethod
-    def multiply(self, other):
+    def __mul__(self, other):
         """
         Multiply a Potential pointwise (over its variables' values) with another. Returns the new potential.
 
@@ -49,10 +49,6 @@ class Potential(metaclass=ABCMeta):
     @abstractmethod
     def __str__(self):
         pass
-
-    def __mul__(self, other):
-        """alias of :py:func:`multiply`"""
-        return self.multiply(other)
 
     @abstractmethod
     def __hash__(self):
@@ -107,7 +103,7 @@ class TablePotential(Potential):
     def _expand_table(self, new_variables): # adds axes to numpy arrays for purposes of additional variables and brings them in the right order
         old_variables=list(self.variables)
         new_variables=list(new_variables)
-        missing_variables=[var for var in new_variables if var not in old_variables]
+        missing_variables=[var for var in new_variables if var not in old_variables] #preserve order!
         expanded_table=self.table
 
         for variable in missing_variables:
@@ -126,7 +122,7 @@ class TablePotential(Potential):
             old_variables[old_idx]=swap_save
         return expanded_table
 
-    def multiply(self, other):
+    def __mul__(self, other):
         self_variables=list(self.variables)
         other_variables=list(other.variables)
         new_variables=list(set(self_variables+other_variables)) # combine variable lists
