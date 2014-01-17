@@ -114,7 +114,7 @@ class FactorGraph(nx.Graph):
                 msg=unity
                 for msg_from in incoming.values():
                     msg=msg*msg_from
-            messages[msg_target][msg_source]=msg
+            messages[msg_target][msg_source]=msg.normalize()
 
             schedule[msg_target][0].append(msg_source)
             schedule[msg_source][1].remove(msg_target)
@@ -139,7 +139,7 @@ class FactorGraph(nx.Graph):
         for var in self.variables:
             marginals[var]=unity
             for msg in msgs[var].values():
-                marginals[var]=marginals[var]*msg
+                marginals[var]=(marginals[var]*msg).normalize()
         return marginals
 
     def pretty_draw(self, *args, **kwargs):
